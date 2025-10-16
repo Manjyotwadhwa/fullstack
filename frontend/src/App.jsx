@@ -12,7 +12,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:4000");
+const socket = io(import.meta.env.VITE_BACKEND_URL);
+
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
