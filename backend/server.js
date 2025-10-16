@@ -12,20 +12,37 @@ import { initSocket } from "./socket.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
-app.use(express.json());
-app.use(cors());
+// ✅ CORS configuration — allow frontend from Vercel + local
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // for local frontend
+      "https://fullstack-six-eta.vercel.app/", // 👉 replace with your actual Vercel frontend URL
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 
+// Middleware to parse JSON requests
+app.use(express.json());
+
+// ✅ Connect Database
 connectDB();
 
+// ✅ Routes
 app.use("/api/food", foodRouter);
 app.use("/images", express.static("uploads"));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 
+// ✅ Root endpoint
 app.get("/", (req, res) => res.send("API Working ✅"));
 
+// ✅ Socket.io setup
 const server = http.createServer(app);
-initSocket(server); // initialize socket.io
+initSocket(server);
 
+// ✅ Start server
 server.listen(port, () => console.log(`✅ Server running on port ${port}`));
